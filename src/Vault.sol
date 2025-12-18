@@ -32,6 +32,7 @@ contract Vault {
         i_rebaseToken.mint(msg.sender, msg.value, interestRate);
         emit Deposit(msg.sender, msg.value);
     }
+
     /**
      * @notice Allows users to redeem their rebase tokens for ETH.
      * @param _amount The amount of rebase tokens to redeem.
@@ -45,12 +46,13 @@ contract Vault {
         // 1. burn the user's tokens
         i_rebaseToken.burn(msg.sender, _amount);
         // 2. we need to sent the user ETH
-        (bool success, ) = payable(msg.sender).call{value: _amount}("");
+        (bool success,) = payable(msg.sender).call{value: _amount}("");
         if (!success) {
             revert Vault__RedeemFailed();
         }
         emit Redeem(msg.sender, _amount);
     }
+
     /**
      * @notice Returns the address of the rebase token associated with this vault.
      * @return The address of the rebase token.

@@ -2,12 +2,8 @@
 pragma solidity ^0.8.24;
 
 import {Script} from "forge-std/Script.sol";
-import {
-    TokenPool
-} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/ccip/pools/TokenPool.sol";
-import {
-    RateLimiter
-} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
+import {TokenPool} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/ccip/pools/TokenPool.sol";
+import {RateLimiter} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
 contract ConfigurePoolScript is Script {
     function run(
@@ -25,8 +21,7 @@ contract ConfigurePoolScript is Script {
         vm.startBroadcast();
         bytes[] memory remotePoolAddresses = new bytes[](1);
         remotePoolAddresses[0] = abi.encode(remotePool);
-        TokenPool.ChainUpdate[]
-            memory chainsToAdd = new TokenPool.ChainUpdate[](1);
+        TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: remoteChainSelector,
             allowed: true,

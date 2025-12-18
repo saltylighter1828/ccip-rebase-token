@@ -3,9 +3,7 @@ pragma solidity ^0.8.24;
 
 import {Test, console} from "lib/forge-std/src/Test.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import {
-    IAccessControl
-} from "lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
+import {IAccessControl} from "lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
 import {RebaseToken} from "../src/RebaseToken.sol";
 import {Vault} from "../src/Vault.sol";
 import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
@@ -27,9 +25,7 @@ contract RebaseTokenTest is Test {
     }
 
     function addRewardsToVault(uint256 rewardAmount) public {
-        (bool success, ) = payable(address(vault)).call{value: rewardAmount}(
-            ""
-        ); // made this a helper function instead of pasting it in setUp.
+        (bool success,) = payable(address(vault)).call{value: rewardAmount}(""); // made this a helper function instead of pasting it in setUp.
     }
 
     function testDepositLinear(uint256 amount) public {
@@ -51,13 +47,10 @@ contract RebaseTokenTest is Test {
         uint256 endBalance = rebaseToken.balanceOf(user);
         assertGt(endBalance, middleBalance);
 
-        assertApproxEqAbs(
-            endBalance - middleBalance,
-            middleBalance - startBalance,
-            1
-        ); //checking linear growth is the same
+        assertApproxEqAbs(endBalance - middleBalance, middleBalance - startBalance, 1); //checking linear growth is the same
         vm.stopPrank();
     }
+
     function testRedeemStraightAway(uint256 amount) public {
         amount = bound(amount, 1e5, type(uint96).max);
         //1. Deposit
@@ -72,10 +65,7 @@ contract RebaseTokenTest is Test {
         vm.stopPrank();
     }
 
-    function testRedeemAfterTimePassed(
-        uint256 depositAmount,
-        uint256 time
-    ) public {
+    function testRedeemAfterTimePassed(uint256 depositAmount, uint256 time) public {
         time = bound(time, 1000, type(uint56).max);
         depositAmount = bound(depositAmount, 1e5, type(uint96).max);
 
@@ -136,9 +126,7 @@ contract RebaseTokenTest is Test {
         assertEq(rebaseToken.getUserInterestRate(user), 5e10);
     }
 
-    function testCannotSetInterestRateIfNotOwner(
-        uint256 newInterestRate
-    ) public {
+    function testCannotSetInterestRateIfNotOwner(uint256 newInterestRate) public {
         vm.prank(user);
         vm.expectPartialRevert(Ownable.OwnableUnauthorizedAccount.selector);
         rebaseToken.setInterestRate(newInterestRate);
@@ -150,16 +138,12 @@ contract RebaseTokenTest is Test {
 
         // mint should revert for non-authorized user
         vm.prank(user);
-        vm.expectPartialRevert(
-            IAccessControl.AccessControlUnauthorizedAccount.selector
-        );
+        vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
         rebaseToken.mint(user, 1000, rate);
 
         // prank only applies to the next call, so we prank again
         vm.prank(user);
-        vm.expectPartialRevert(
-            IAccessControl.AccessControlUnauthorizedAccount.selector
-        );
+        vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
         rebaseToken.burn(user, 1000);
     }
 
@@ -178,17 +162,12 @@ contract RebaseTokenTest is Test {
     function testGetRebaseTokenAddress() public view {
         assertEq(vault.getRebaseTokenAddress(), address(rebaseToken));
     }
+
     function testInterestRateCanOnlyDecrease(uint256 newInterestRate) public {
         uint256 initialInterestRate = rebaseToken.getInterestRate();
-        newInterestRate = bound(
-            newInterestRate,
-            initialInterestRate,
-            type(uint96).max
-        );
+        newInterestRate = bound(newInterestRate, initialInterestRate, type(uint96).max);
         vm.prank(owner);
-        vm.expectPartialRevert(
-            RebaseToken.RebaseToken__InterestRateCanOnlyDecrease.selector
-        );
+        vm.expectPartialRevert(RebaseToken.RebaseToken__InterestRateCanOnlyDecrease.selector);
         rebaseToken.setInterestRate(newInterestRate);
         assertEq(rebaseToken.getInterestRate(), initialInterestRate);
     }
