@@ -1,0 +1,54 @@
+# -------------------------
+# Solidity / Foundry
+# -------------------------
+# Build artifacts
+cache/
+out/
+
+# Broadcast logs (keep top-level folder, ignore network-specific runs)
+broadcast/*/                             # ignore all broadcasts
+!broadcast/                              # keep folder
+broadcast/*/!(default|sepolia|mainnet)/  # optional: track only certain networks
+broadcast/**/dry-run/                    # ignore dry runs
+
+# ZkSync specific artifacts
+zkout/
+
+# -------------------------
+# Node / JavaScript / NPM
+# -------------------------
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Lockfiles (optional — keep if you want deterministic installs)
+package-lock.json
+yarn.lock
+
+# -------------------------
+# IDE / Editor / OS Files
+# -------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Environment / Secrets
+# -------------------------
+.env
+.env.*
+.env.local
+.env.*.local
+
+# -------------------------
+# Documentation output
+# -------------------------
+docs/
+
+# -------------------------
+# Git Submodules (optional)
+# -------------------------
+# Uncomment if you do NOT want to commit dependencies pulled via forge install
+# lib/
